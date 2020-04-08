@@ -1,12 +1,25 @@
 import React,{Component} from 'react';
 import {View,Text,StyleSheet,Button} from 'react-native';
 import {Input} from './common';
+import firebase from 'firebase';
 
 class LoginForm extends Component{
     state ={
         email:'',
         password:''
     }
+
+    onButtonClicked(){
+        const{email,password}=this.state;
+        firebase.auth().signInWithEmailAndPassword(email,password)
+        .catch(()=>{
+            firebase.auth().createUserWithEmailAndPassword(email,password)
+                .catch(()=>{
+                    console.log('hata'); //TODO
+            })
+        });
+    }
+
     render(){
         return(
 <View style={{padding:30}}> 
@@ -32,7 +45,9 @@ class LoginForm extends Component{
         />
     </View>
     <View style={styles.buttonWrapper}>
-        <Button color='#E87879' title='Login'/>
+        <Button color='#E87879' title='Login'
+        onPress={this.onButtonClicked.bind(this)}
+        />
     </View>
 </View>
         )
